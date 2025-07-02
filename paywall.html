@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RP Screen Recorder - Activate</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #1e1e1e; color: #d4d4d4; text-align: center; }
+        .container { padding: 30px; }
+        h1 { font-weight: 200; }
+        button { font-size: 16px; padding: 12px 24px; cursor: pointer; background-color: #0e639c; color: white; border: none; border-radius: 5px; margin-top: 20px; }
+        button:hover { background-color: #1177bb; }
+        input { margin-top: 15px; padding: 10px; width: 80%; background-color: #3c3c3c; border: 1px solid #3c3c3c; border-radius: 5px; color: #d4d4d4; }
+        .success-message { color: #4CAF50; }
+        .error-message { color: #F44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subscription Required</h1>
+        <p>Enter your license key or purchase a new subscription to use RP Screen Recorder.</p>
+        <input type="text" id="licenseKey" placeholder="Enter License Key">
+        <button id="activateBtn">Activate</button>
+        <button id="purchaseBtn">Purchase Subscription</button>
+        <p id="message"></p>
+    </div>
+    <script>
+        const licenseInput = document.getElementById('licenseKey');
+        const activateBtn = document.getElementById('activateBtn');
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        const message = document.getElementById('message');
+
+        activateBtn.addEventListener('click', async () => {
+            const result = await window.api.invoke('validate-license', licenseInput.value);
+            if (result.status === 'active') {
+                message.textContent = 'Success! The application will now restart...';
+                message.className = 'success-message';
+                activateBtn.disabled = true;
+                purchaseBtn.disabled = true;
+            } else {
+                message.textContent = result.message || 'Invalid or inactive license key.';
+                message.className = 'error-message';
+            }
+        });
+
+        purchaseBtn.addEventListener('click', () => {
+            window.api.send('purchase-subscription');
+        });
+    </script>
+</body>
+</html>
